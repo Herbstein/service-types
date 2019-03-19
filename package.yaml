@@ -1,0 +1,36 @@
+library:
+  source-dirs: src
+tests:
+  service-types-test:
+    source-dirs: test
+    main: Spec.hs
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - service-types
+copyright: 2019 Rasmus Larsen
+maintainer: doctorherbstein@gmail.com
+dependencies:
+- base >= 4.7 && < 5
+- scalpel
+name: service-types
+version: 0.1.0.0
+extra-source-files:
+- README.md
+- ChangeLog.md
+author: Rasmus Larsen
+github: herbstein/service-types
+license: BSD3
+executables:
+  service-types-exe:
+    source-dirs: app
+    main: Main.hs
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - service-types
+description: Please see the README on GitHub at <https://github.com/herbstein/service-types#readme>
