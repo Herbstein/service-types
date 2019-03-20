@@ -1,19 +1,19 @@
-{
-    "files": [
-        {
-            "name": "servicenow",
-            "urls": [
-                "https://docs.servicenow.com/bundle/london-application-development/page/app-store/dev_portal/API_reference/glideRecordScoped/concept/c_GlideRecordScopedAPI.html",
-                "https://docs.servicenow.com/bundle/london-application-development/page/app-store/dev_portal/API_reference/glideQueryConditionScoped/concept/c_GlideQueryConditionScopedAPI.html"
-            ]
-        },
-        {
-            "name": "automation",
-            "urls": []
-        },
-        {
-            "name": "apiendpoint",
-            "urls": []
-        }
-    ]
-}
+[
+    {
+        "name": "servicenow",
+        "urls": [
+            "https://docs.servicenow.com/bundle/jakarta-application-development/page/app-store/dev_portal/API_reference/glideRecordScoped/concept/c_GlideRecordScopedAPI.html#c_GlideRecordScopedAPI",
+            "https://docs.servicenow.com/bundle/jakarta-application-development/page/app-store/dev_portal/API_reference/glideQueryConditionScoped/concept/c_GlideQueryConditionScopedAPI.html",
+            "https://docs.servicenow.com/bundle/jakarta-application-development/page/app-store/dev_portal/API_reference/glideElementDescriptor/concept/c_GlideElementDescriptorScopedAPI.html",
+            "https://docs.servicenow.com/bundle/jakarta-application-development/page/app-store/dev_portal/API_reference/glideElement/concept/c_GlideElementScopedAPI.html"
+        ]
+    },
+    {
+        "name": "automation",
+        "urls": []
+    },
+    {
+        "name": "apiendpoint",
+        "urls": []
+    }
+]
