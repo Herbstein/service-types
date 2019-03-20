@@ -15,6 +15,9 @@ maintainer: doctorherbstein@gmail.com
 dependencies:
 - base >= 4.7 && < 5
 - scalpel
+- aeson
+- text
+- bytestring
 name: service-types
 version: 0.1.0.0
 extra-source-files:

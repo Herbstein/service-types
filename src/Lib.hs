@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib (parseServiceNowAPIDocumentation, prettyPrint) where
+module Lib (parseServiceNowAPIDocumentation, prettyPrint, Class(..)) where
 
 import           Control.Applicative
 import           Control.Monad
