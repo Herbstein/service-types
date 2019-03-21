@@ -38,6 +38,12 @@ prettyPrintMethod (Method name parameters ret) = name
 prettyPrintParameter :: Parameter -> String
 prettyPrintParameter (Parameter name typ) = name ++ ": " ++ typ
 
+validateName :: String -> String
+validateName = id
+
+validateType :: String -> String
+validateType = id
+
 className :: Scraper String String
 className = fmap (takeWhile (\c -> not $ c == '-'))
   $ text
