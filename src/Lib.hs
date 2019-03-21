@@ -1,27 +1,28 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib (parseServiceNowAPIDocumentation, prettyPrint) where
+module Lib (parseServiceNowAPIDocumentation, prettyPrint, Class(..)) where
 
 import           Control.Applicative
 import           Control.Monad
 import           Data.List
 import           Data.Maybe
+import           Data.Text (Text, pack, unpack, replace)
 import           Text.HTML.Scalpel
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
 
-data Class = Class String String [Method]
+data Class = Class String [Method]
   deriving (Show)
 
-data Method = Method String [Parameter] (Maybe String)
+data Method = Method String [Parameter] String
   deriving (Show)
 
 data Parameter = Parameter String String
   deriving (Show)
 
 prettyPrint :: Class -> String
-prettyPrint (Class name _ methods) = "declare class "
+prettyPrint (Class name methods) = "declare class "
   ++ name
   ++ "{ \n"
   ++ intercalate "\n" (map prettyPrintMethod methods)
@@ -32,7 +33,7 @@ prettyPrintMethod (Method name parameters ret) = name
   ++ "("
   ++ intercalate ", " (map prettyPrintParameter parameters)
   ++ "): "
-  ++ fromMaybe "void" ret
+  ++ ret
   ++ ";"
 
 prettyPrintParameter :: Parameter -> String
@@ -42,10 +43,6 @@ className :: Scraper String String
 className = fmap (takeWhile (\c -> not $ c == '-'))
   $ text
   $ "div" @: [hasClass "article__head"] // "h2"
-
-classDescription :: Scraper String String
-classDescription =
-  text $ "div" @: [hasClass "conbody"] // "p" @: [hasClass "shortdesc"]
 
 methodName :: Scraper String String
 methodName = text $ "h2" @: [hasClass "title"]
@@ -74,21 +71,31 @@ methodReturn :: Scraper String (Maybe String)
 methodReturn = do
   tableEntries <- chroots
     ("table" @: [hasClass "returns"] // "tr" @: [hasClass "row"])
-    $ text "td"
-  if length tableEntries > 0
-    then return $ Just $ tableEntries !! 0
-    else return Nothing
+    $ text
+    $ "td" @: [hasClass "entry"]
+  return
+    $ if length tableEntries > 0
+      then Just $ tableEntries !! 0
+      else Nothing
 
 method :: Scraper String Method
 method = do
   n <- methodName
   parameters <- methodParameters
-  ret <- methodReturn
+  r <- methodReturn
   let name = tail
         . takeWhile (\c -> not $ c == '(')
         . dropWhile (\c -> not $ c == '-')
         $ n
-  return $ Method name (tail parameters) ret
+      rWithout = fromMaybe "void" r
+      ret = if ("Array" `isInfixOf` rWithout)
+            then "Object[]"
+            else rWithout
+  return
+    $ Method
+      name
+      (tail parameters)
+      ((unpack . replace "Scoped" "" . pack) $ ret)
 
 methods :: Scraper String [Method]
 methods = chroots ("article" @: [hasClass "api-method"]) method
@@ -98,7 +105,6 @@ parseServiceNowAPIDocumentation url = scrapeURL
   url
   (do
      name <- className
-     description <- classDescription
      methods <- methods
-     return $ Class name description methods)
+     return $ Class name methods)
 
