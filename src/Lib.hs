@@ -4,9 +4,12 @@ module Lib (parseServiceNowAPIDocumentation, prettyPrint, Class(..)) where
 
 import           Control.Applicative
 import           Control.Monad
+import           Data.AssocList.List.Predicate
+import           Data.AssocList.List.Concept
+import           Data.Functor.Contravariant
 import           Data.List
 import           Data.Maybe
-import           Data.Text (Text, pack, unpack, replace)
+import           Data.Text (Text, pack, unpack, replace, strip)
 import           Text.HTML.Scalpel
 
 someFunc :: IO ()
@@ -39,14 +42,22 @@ prettyPrintMethod (Method name parameters ret) = name
 prettyPrintParameter :: Parameter -> String
 prettyPrintParameter (Parameter name typ) = name ++ ": " ++ typ
 
+assocSub :: Eq a => AssocList a a -> a -> a
+assocSub list x = fromMaybe x $ lookupFirst (Predicate (== x)) list
+
 validateName :: String -> String
-validateName = id
+validateName name = assocSub nameMap name
+  where
+    nameMap = [("function", "func")]
 
 validateType :: String -> String
-validateType = id
+validateType typ = assocSub typeMap typ
+  where
+    typeMap = [("Array", "Object[]")]
 
 className :: Scraper String String
-className = fmap (takeWhile (\c -> not $ c == '-'))
+className = fmap
+  (validateName . unpack . strip . pack . takeWhile (\c -> not $ c == '-'))
   $ text
   $ "div" @: [hasClass "article__head"] // "h2"
 
@@ -56,8 +67,8 @@ methodName = text $ "h2" @: [hasClass "title"]
 methodParameter :: Scraper String Parameter
 methodParameter = do
   e <- entries
-  let name = takeWhile (\c -> not $ c == '(') $ e !! 0
-  let typ = e !! 1
+  let name = validateName $ takeWhile (\c -> not $ c == '(') $ e !! 0
+  let typ = validateType $ e !! 1
   return $ Parameter name typ
   where
     entries = texts $ AnyTag @: [hasClass "entry"]
@@ -81,27 +92,23 @@ methodReturn = do
     $ "td" @: [hasClass "entry"]
   return
     $ if length tableEntries > 0
-      then Just $ tableEntries !! 0
+      then Just $ validateType $ tableEntries !! 0
       else Nothing
 
 method :: Scraper String Method
 method = do
   n <- methodName
   parameters <- methodParameters
-  r <- methodReturn
+  ret <- methodReturn
   let name = tail
         . takeWhile (\c -> not $ c == '(')
         . dropWhile (\c -> not $ c == '-')
         $ n
-      rWithout = fromMaybe "void" r
-      ret = if ("Array" `isInfixOf` rWithout)
-            then "Object[]"
-            else rWithout
   return
     $ Method
       name
       (tail parameters)
-      ((unpack . replace "Scoped" "" . pack) $ ret)
+      ((unpack . strip . replace "Scoped" "" . pack) $ fromMaybe "void" ret)
 
 methods :: Scraper String [Method]
 methods = chroots ("article" @: [hasClass "api-method"]) method

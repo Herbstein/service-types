@@ -19,6 +19,8 @@ dependencies:
 - text
 - bytestring
 - filepath
+- assoc-list
+- contravariant
 name: service-types
 version: 0.1.0.0
 extra-source-files:
