@@ -55,3 +55,54 @@ declare class GlideRecord {
     update(reason: String): String;
     updateMultiple(): void;
 }
+
+declare class GlideQueryCondition {
+    addCondition(name: String, oper: String, value: Object): GlideQueryCondition;
+    addOrCondition(name: String, oper: String, value: Object): GlideQueryCondition;
+}
+
+declare class GlideElementDescriptor {
+    getAttachmentEncryptionType(): String;
+    getEncryptionType(): String;
+    getInternalType(): String;
+    getLabel(): String;
+    getLength(): Number;
+    getName(): String;
+    getPlural(): String;
+    hasAttachmentsEncrypted(): Boolean;
+    isAutoOrSysID(): Boolean;
+    isChoiceTable(): Boolean;
+    isEdgeEncrypted(): Boolean;
+    isVirtual(): Boolean;
+}
+
+declare class GlideElement {
+    canCreate(): Boolean;
+    canRead(): Boolean;
+    canWrite(): Boolean;
+    changes(): Boolean;
+    changesFrom(o: Object): Boolean;
+    changesTo(o: Object): Boolean;
+    getAttribute(attributeName: String): String;
+    getBooleanAttribute(attributeName: String): Boolean;
+    getChoices(dependent: String): Object[];
+    getChoiceValue(): String;
+    getDecryptedValue(): String;
+    getDisplayValue(maxCharacters: Number): String;
+    getED(): GlideElementDescriptor;
+    getGlobalDisplayValue(): String;
+    getHTMLValue(maxChars: Number): String;
+    getJournalEntry(mostRecent: Number): String;
+    getLabel(): String;
+    getName(): String;
+    getReferenceTable(): String;
+    getRefRecord(): GlideRecord;
+    getTableName(): String;
+    nil(): Boolean;
+    setDateNumericValue(milliseconds: Number): void;
+    setDisplayValue(value: Object): void;
+    setError(errorMessage: String): void;
+    setPhoneNumber(phoneNumber: Object, strict: Boolean): Boolean;
+    setValue(value: Object): void;
+    toString(value: Object): String;
+}
