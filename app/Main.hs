@@ -6,11 +6,11 @@ module Main where
 
 import           Control.Applicative
 import           Data.Aeson
-import qualified Data.ByteString.Lazy as B
+import qualified Data.ByteString.Lazy          as B
 import           Data.Functor
 import           Data.List
 import           Data.Maybe
-import           Data.Text (Text)
+import           Data.Text                      ( Text )
 import           Debug.Trace
 import           GHC.Generics
 import           Lib
@@ -30,8 +30,9 @@ data TypeClasses = TypeClasses { classesName :: String, classes :: [Class] }
   deriving (Show)
 
 parseTypeFile :: TypeFile -> IO TypeClasses
-parseTypeFile file = TypeClasses (name file) . catMaybes
-  <$> mapM parseServiceNowAPIDocumentation (urls file)
+parseTypeFile file = TypeClasses (name file) . catMaybes <$> mapM
+  parseServiceNowAPIDocumentation
+  (urls file)
 
 data TypeDefinitionFile =
   TypeDefinitionFile { fileName :: String, contents :: String }
@@ -41,16 +42,16 @@ typeClassesToFile xs = TypeDefinitionFile (classesName xs)
   $ intercalate "\n\n" (map prettyPrint $ classes xs)
 
 writeDefinitionFile :: FilePath -> TypeDefinitionFile -> IO ()
-writeDefinitionFile basePath file = writeFile (basePath </> fileName file <.> "d.ts") (contents file)
+writeDefinitionFile basePath file =
+  writeFile (basePath </> fileName file <.> "d.ts") (contents file)
 
 main :: IO ()
 main = do
   fileDecode <- eitherDecode <$> getJSON
-  files <- case fileDecode of
-    Left err    -> do
+  files      <- case fileDecode of
+    Left err -> do
       putStrLn err
       return []
     Right files -> return files
   fileClasses <- mapM parseTypeFile files
-  let definitionFiles = map typeClassesToFile fileClasses
-  mapM_ (writeDefinitionFile "examples") definitionFiles
+  mapM_ (writeDefinitionFile "examples" . typeClassesToFile) fileClasses
