@@ -21,7 +21,7 @@ data TypeFile = TypeFile { name :: String, urls :: [String] }
   deriving (Show, Generic, ToJSON, FromJSON)
 
 typeFile :: FilePath
-typeFile = "test.json"
+typeFile = "definitions.json"
 
 getJSON :: IO B.ByteString
 getJSON = B.readFile typeFile

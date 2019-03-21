@@ -1,6 +1,7 @@
 declare class GlideRecord{ 
  addActiveQuery(): QueryCondition;
  addEncodedQuery(query: String): void;
+ addFunction(func: Object): void;
  addJoinQuery(joinTable: String, primaryField: Object, joinTableField: Object): GlideQueryCondition;
  addNotNullQuery(fieldName: String): GlideQueryCondition;
  addNullQuery(fieldName: String): GlideQueryCondition;
