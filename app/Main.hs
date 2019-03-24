@@ -5,7 +5,7 @@
 module Main where
 
 import           Control.Applicative
-import           Control.Concurrent.ParallelIO.Global
+import           Control.Concurrent.Async
 import           Data.Aeson
 import qualified Data.ByteString.Lazy          as B
 import           Data.Functor
@@ -54,7 +54,7 @@ main = do
       putStrLn err
       return []
     Right files -> return files
-  fileClasses <- parallel (map parseTypeFile files)
-  parallel
-      (map (writeDefinitionFile "examples" . typeClassesToFile) fileClasses)
-    *> stopGlobalPool
+  typeClasses <- mapConcurrently parseTypeFile files
+  mapConcurrently_ (writeDefinitionFile "examples" . typeClassesToFile)
+                   typeClasses
+

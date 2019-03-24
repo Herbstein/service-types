@@ -21,7 +21,7 @@ dependencies:
 - filepath
 - assoc-list
 - contravariant
-- parallel-io
+- async
 name: service-types
 version: 0.1.0.0
 extra-source-files:
