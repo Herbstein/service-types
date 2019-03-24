@@ -107,3 +107,26 @@ declare class GlideElement{
  setValue(value: Object): void;
  toString(value: Object): String;
 }
+
+declare class GlideAggregate{ 
+ addAggregate(agg: String, name: String): void;
+ addEncodedQuery(query: String): void;
+ addQuery(name: String, operator: String, value: String): GlideQueryCondition;
+ addNotNullQuery(fieldname: String): GlideQueryCondition;
+ addNullQuery(fieldName: String): GlideQueryCondition;
+ addTrend(fieldName: String, timeInterval: String): void;
+ getAggregate(agg: String, name: String): String;
+ getAggregateEncodedQuery(): String;
+ getEncodedQuery(): String;
+ getRowCount(): Number;
+ getTableName(): String;
+ getValue(name: String): String;
+ groupBy(name: String): void;
+ hasNext(): Boolean;
+ next(): Boolean;
+ orderBy(name: String): void;
+ orderByAggregate(agg: String, fieldName: String): void;
+ orderByDesc(name: String): void;
+ query(): void;
+ setGroup(b: Boolean): void;
+}
