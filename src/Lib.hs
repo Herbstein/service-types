@@ -86,11 +86,12 @@ methodParameter = do
 
 methodParameters :: Scraper String [Parameter]
 methodParameters = chroots
-  ("table" @: [hasClass "parameters"] // "tr" @: [hasClass "row"])
+  ("table" @: [hasClass "parameters"] // "tbody" // "tr" @: [hasClass "row"])
   (do
     parameter <- methodParameter
     guard $ case parameter of
       Parameter "None" _ -> False
+      Parameter "none" _ -> False
       _                  -> True
     return parameter
   )
@@ -114,11 +115,11 @@ method = do
   let name =
         tail
           . takeWhile (\c -> not $ c == '(')
-          . dropWhile (\c -> not $ c == '-')
+          . dropWhile (\c -> not $ c == '-' || c == '–')
           $ n
   return $ Method
     name
-    (tail parameters)
+    parameters
     ((unpack . strip . replace "Scoped" "" . pack) $ fromMaybe "void" ret)
 
 methods :: Scraper String [Method]
